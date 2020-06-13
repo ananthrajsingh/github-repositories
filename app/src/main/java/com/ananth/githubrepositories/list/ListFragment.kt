@@ -32,6 +32,8 @@ class ListFragment : Fragment() {
         // Giving the binding access to the ListViewModel
         binding.viewModel = viewModel
 
+        val adapter = RepoListAdapter(RepoClickListener {  })
+        binding.repositoryList.adapter = adapter
         return binding.root
     }
 

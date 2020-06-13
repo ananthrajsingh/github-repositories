@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Github Repositories</string>
     <string name="error_retrieving_data">Error retrieving data</string>
+    <string name="avatar">Avatar</string>
 </resources>
