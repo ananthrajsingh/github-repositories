@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.ananth.githubrepositories.R
+import com.ananth.githubrepositories.databinding.ListFragmentBinding
 
 class ListFragment : Fragment() {
 
@@ -14,17 +15,28 @@ class ListFragment : Fragment() {
         fun newInstance() = ListFragment()
     }
 
-    private lateinit var viewModel: ListViewModel
-
+    /**
+     * Lazily initialize the [ListViewModel].
+     */
+    private val viewModel: ListViewModel by lazy {
+        ViewModelProviders.of(this).get(ListViewModel::class.java)
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.list_fragment, container, false)
+
+        val binding = ListFragmentBinding.inflate(inflater)
+
+        // Allows Data Binding to Observe LiveData with the lifecycle of this Fragment
+        binding.lifecycleOwner = this
+
+        // Giving the binding access to the ListViewModel
+        binding.viewModel = viewModel
+
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(ListViewModel::class.java)
-        // TODO: Use the ViewModel
     }
 
 }

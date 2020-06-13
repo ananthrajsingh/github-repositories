@@ -31,11 +31,11 @@ private val retrofit = Retrofit.Builder()
  */
 interface RepoApiService {
     /**
-     * Returns a Coroutine [Deferred] [List] of [Repository] which can be fetched with await() if
+     * Returns a Coroutine [Call] [List] of [Repository] which can be fetched with await() if
      * in a Coroutine scope.
      */
     @GET(Constant.REPOSITORIES_ENDPOINT)
-    fun getRepositories(): Deferred<List<Repository>>
+    fun getRepositories(): Call<List<Repository>>
 }
 
 /**

@@ -5,6 +5,6 @@ package com.ananth.githubrepositories.util
  */
 object Constant {
     /* Network Constants */
-    const val BASE_URL = "api.github.com"
+    const val BASE_URL = "https://api.github.com"
     const val REPOSITORIES_ENDPOINT = "repositories"
 }
