@@ -19,7 +19,8 @@ class ListFragment : Fragment() {
      * Lazily initialize the [ListViewModel].
      */
     private val viewModel: ListViewModel by lazy {
-        ViewModelProviders.of(this).get(ListViewModel::class.java)
+        ViewModelProviders.of(this, ListViewModel.Factory(activity!!.application))
+            .get(ListViewModel::class.java)
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {

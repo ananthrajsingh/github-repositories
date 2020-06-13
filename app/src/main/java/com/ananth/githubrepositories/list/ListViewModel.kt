@@ -1,19 +1,22 @@
 package com.ananth.githubrepositories.list
 
+import android.app.Application
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.widget.Toast
+import androidx.lifecycle.*
 import com.ananth.githubrepositories.model.Repository
 import com.ananth.githubrepositories.network.RepoApi
+import com.ananth.githubrepositories.network.getRepoApiService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import retrofit2.await
+import java.lang.Exception
 import java.lang.NullPointerException
 
-class ListViewModel : ViewModel() {
+class ListViewModel(application: Application) : AndroidViewModel(application) {
 
     // This will hold the data to be shown in the list
     private val _repoList = MutableLiveData<List<Repository>>()
@@ -29,18 +32,45 @@ class ListViewModel : ViewModel() {
 
     init {
         coroutineScope.launch {
-            var repositoriesDeferred = RepoApi.retrofitService.getRepositories()
+            val repositoriesDeferred = getRepoApiService(application).getRepositories()
             try {
                 val repositoriesResult = repositoriesDeferred.await()
                 _repoList.value = repositoriesResult
                 Log.d(TAG, "Received ${_repoList.value!!.size} items")
             } catch (e: NullPointerException) {
-                Log.e(TAG, e.toString())
+                e.printStackTrace()
+            } catch (e: HttpException) {
+                e.printStackTrace()
+                when {
+                    e.code() == 404 -> Toast.makeText(getApplication(),
+                        "Please Check Location Name", Toast.LENGTH_LONG).show()
+                    e.code() == 504 -> Toast.makeText(getApplication(),
+                        "Please Check Network Connectivity", Toast.LENGTH_LONG).show()
+                    else -> Toast.makeText(getApplication(),
+                        "Something Is Not Right", Toast.LENGTH_LONG).show()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(getApplication(), "Something Is Not Right", Toast.LENGTH_LONG)
+                    .show()
             }
         }
     }
 
     companion object {
         val TAG = ListViewModel::class.java.simpleName
+    }
+
+    /**
+     * Factory for constructing ForecastViewModel with parameter
+     */
+    class Factory(val app: Application) : ViewModelProvider.Factory {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            if (modelClass.isAssignableFrom(ListViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
+                return ListViewModel(app) as T
+            }
+            throw IllegalArgumentException("Unable to construct viewmodel")
+        }
     }
 }
