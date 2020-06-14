@@ -4,8 +4,11 @@ import android.app.Application
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.*
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.ananth.githubrepositories.model.Repository
 import com.ananth.githubrepositories.network.RepoApi
+import com.ananth.githubrepositories.network.UpdateWorker
 import com.ananth.githubrepositories.network.getRepoApiService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +18,7 @@ import retrofit2.HttpException
 import retrofit2.await
 import java.lang.Exception
 import java.lang.NullPointerException
+import java.util.concurrent.TimeUnit
 
 class ListViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -55,8 +59,16 @@ class ListViewModel(application: Application) : AndroidViewModel(application) {
                     .show()
             }
         }
+        setupWorkRequest()
     }
 
+    private fun setupWorkRequest() {
+        val workRequest = PeriodicWorkRequestBuilder<UpdateWorker>(
+            20,
+            TimeUnit.MINUTES)
+            .build()
+        WorkManager.getInstance(getApplication()).enqueue(workRequest)
+    }
     companion object {
         val TAG = ListViewModel::class.java.simpleName
     }
