@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.ananth.githubrepositories.R
+import com.ananth.githubrepositories.databinding.DetailFragmentBinding
 
 class DetailFragment : Fragment() {
 
@@ -21,7 +22,13 @@ class DetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.detail_fragment, container, false)
+        val application = requireNotNull(activity).application
+        val binding = DetailFragmentBinding.inflate(inflater)
+        binding.lifecycleOwner = this
+        val repository = DetailFragmentArgs.fromBundle(requireArguments()).selectedRepository
+        binding.repository = repository
+
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

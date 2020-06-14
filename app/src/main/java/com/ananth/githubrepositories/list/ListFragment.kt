@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.ananth.githubrepositories.R
 import com.ananth.githubrepositories.databinding.ListFragmentBinding
 
@@ -19,7 +20,7 @@ class ListFragment : Fragment() {
      * Lazily initialize the [ListViewModel].
      */
     private val viewModel: ListViewModel by lazy {
-        ViewModelProviders.of(this, ListViewModel.Factory(activity!!.application))
+        ViewModelProviders.of(this, ListViewModel.Factory(requireActivity().application))
             .get(ListViewModel::class.java)
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -33,7 +34,9 @@ class ListFragment : Fragment() {
         // Giving the binding access to the ListViewModel
         binding.viewModel = viewModel
 
-        val adapter = RepoListAdapter(RepoClickListener {  })
+        val adapter = RepoListAdapter(RepoClickListener {
+            this.findNavController().navigate(ListFragmentDirections.actionListFragmentToDetailFragment(it))
+        })
         binding.repositoryList.adapter = adapter
         return binding.root
     }

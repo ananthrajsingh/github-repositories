@@ -43,7 +43,7 @@ class ListViewModel(application: Application) : AndroidViewModel(application) {
                 e.printStackTrace()
                 when {
                     e.code() == 404 -> Toast.makeText(getApplication(),
-                        "Please Check Location Name", Toast.LENGTH_LONG).show()
+                        "Not Found", Toast.LENGTH_LONG).show()
                     e.code() == 504 -> Toast.makeText(getApplication(),
                         "Please Check Network Connectivity", Toast.LENGTH_LONG).show()
                     else -> Toast.makeText(getApplication(),
